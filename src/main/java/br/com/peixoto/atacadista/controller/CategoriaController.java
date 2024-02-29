@@ -1,11 +1,9 @@
 package br.com.peixoto.atacadista.controller;
 
-import br.com.peixoto.atacadista.dto.CategoriaIdRequestDTO;
 import br.com.peixoto.atacadista.dto.CategoriaRequestDTO;
 import br.com.peixoto.atacadista.dto.CategoriaResponseDTO;
 import br.com.peixoto.atacadista.jpamodel.CrudRepository;
 import br.com.peixoto.atacadista.jpamodel.FindRepository;
-import br.com.peixoto.atacadista.jpamodel.UpdateRepository;
 import br.com.peixoto.atacadista.openapi.controller.CategoriaControllerOpenApi;
 import br.com.peixoto.atacadista.service.CategoriaService;
 import java.util.List;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/v1/categorias", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CategoriaController implements
         CrudRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
-        UpdateRepository<CategoriaIdRequestDTO, CategoriaResponseDTO>,
         FindRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
         CategoriaControllerOpenApi {
 
@@ -46,15 +44,16 @@ public class CategoriaController implements
     @Override
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/update")
-    public CategoriaResponseDTO update(@Valid @RequestBody CategoriaIdRequestDTO requestBody) {
-        return categoriaService.update(requestBody);
+    public CategoriaResponseDTO update(@RequestHeader(value="categoriaId") Long categoriaId,
+            @Valid @RequestBody CategoriaRequestDTO requestBody) {
+        return categoriaService.update(categoriaId, requestBody);
     }
 
     @Override
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{categoriaId}")
-    public void delete(Long idCategoria) {
-        categoriaService.delete(idCategoria);
+    @DeleteMapping
+    public void delete(@RequestHeader(value="categoriaId") Long categoriaId) {
+        categoriaService.delete(categoriaId);
     }
 
     @Override

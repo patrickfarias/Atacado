@@ -1,7 +1,6 @@
 package br.com.peixoto.atacadista.service;
 
 import br.com.peixoto.atacadista.domain.Categoria;
-import br.com.peixoto.atacadista.dto.CategoriaIdRequestDTO;
 import br.com.peixoto.atacadista.dto.CategoriaRequestDTO;
 import br.com.peixoto.atacadista.dto.CategoriaResponseDTO;
 import br.com.peixoto.atacadista.exception.AbstractMessageErrorCode;
@@ -10,7 +9,6 @@ import br.com.peixoto.atacadista.exception.ErrorMessage;
 import br.com.peixoto.atacadista.jpamodel.CrudRepository;
 import br.com.peixoto.atacadista.jpamodel.FindRepository;
 import br.com.peixoto.atacadista.jpamodel.MergeRepository;
-import br.com.peixoto.atacadista.jpamodel.UpdateRepository;
 import br.com.peixoto.atacadista.repository.CategoriaRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CategoriaService implements
         CrudRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
-        UpdateRepository<CategoriaIdRequestDTO, CategoriaResponseDTO>,
         FindRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
         MergeRepository<Categoria, CategoriaResponseDTO> {
 
@@ -48,6 +45,7 @@ public class CategoriaService implements
     }
 
     @Override
+    @Transactional
     public CategoriaResponseDTO merge(final Categoria categoria) {
 
         final var response = new CategoriaResponseDTO();
@@ -101,11 +99,9 @@ public class CategoriaService implements
 
     @Override
     @Transactional
-    public CategoriaResponseDTO update(final CategoriaIdRequestDTO requestBody) {
+    public CategoriaResponseDTO update(final Long objectId, final CategoriaRequestDTO requestBody) {
 
-        final Categoria categoriaTemp = modelMapper.map(requestBody, Categoria.class);
-
-        final Categoria categoriaAtual = getObjectAtual(categoriaTemp.getId(), requestBody);
+        final Categoria categoriaAtual = getObjectAtual(objectId, requestBody);
 
         return merge(categoriaAtual);
 
