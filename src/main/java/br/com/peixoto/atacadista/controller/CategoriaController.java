@@ -9,11 +9,9 @@ import br.com.peixoto.atacadista.jpamodel.UpdateRepository;
 import br.com.peixoto.atacadista.openapi.controller.CategoriaControllerOpenApi;
 import br.com.peixoto.atacadista.service.CategoriaService;
 import java.util.List;
-
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
