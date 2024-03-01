@@ -19,3 +19,14 @@ FROM
    WHERE
 	cli.id = 1;
 
+	-- Consulta de produtos por categoria
+
+SELECT p.id AS produto_id,
+       c.descricao AS nome_categoria,
+       p.descricao AS nome_produto,
+       p.preco AS preco,
+       p.percentual_maximo_desconto AS percentual_desconto
+
+FROM Produto p
+JOIN Categoria c ON p.categoria_id = c.id
+ORDER BY c.descricao;
