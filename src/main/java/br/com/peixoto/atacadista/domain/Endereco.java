@@ -2,10 +2,8 @@ package br.com.peixoto.atacadista.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,8 +29,8 @@ public class Endereco {
     @Column(name = "endereco_bairro")
     private String bairro;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "endereco_cidade_id")
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private Cidade cidade;
 
 }
