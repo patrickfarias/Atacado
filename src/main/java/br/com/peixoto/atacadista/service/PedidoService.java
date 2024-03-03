@@ -57,7 +57,7 @@ public class PedidoService implements
         pedido.setCliente(cliente);
 
         // Item nao pode ter quantidade zerada
-        requestBody.getItens().stream().forEach(item -> {
+        requestBody.getItens().forEach(item -> {
             if(item.getQuantidade() == 0) {
 
                 final ProdutoResponseDTO produto = produtoService.findById(item.getProduto().getId());
@@ -66,7 +66,7 @@ public class PedidoService implements
         });
 
         // Deve ter pelo menos um item
-        if(requestBody.getItens().size() == 0) {
+        if(requestBody.getItens().isEmpty()) {
             throw new BadRequestException(new ErrorMessage(
                     AbstractMessageErrorCode.LIMITE_MINIMO_ITEM_ATINGIDO));
         }
@@ -75,7 +75,7 @@ public class PedidoService implements
 
     }
 
-    private List<ItemPedido> validarItens(PedidoRequestDTO requestBody, Pedido pedido) {
+    private List<ItemPedido> validarItens(PedidoRequestDTO requestBody) {
 
         final List<ItemPedido> itensAprovados = new ArrayList<>();
         requestBody.getItens().forEach(item -> {
@@ -122,7 +122,7 @@ public class PedidoService implements
     public PedidoResponseDTO save(PedidoRequestDTO requestBody) {
 
         final var pedido = validarPedido(requestBody);
-        final List<ItemPedido> itensAprovados = validarItens(requestBody, pedido);
+        final List<ItemPedido> itensAprovados = validarItens(requestBody);
         validarLimitePorPedido(pedido, itensAprovados);
 
         pedidoRepository.save(pedido);
@@ -133,9 +133,7 @@ public class PedidoService implements
 
         pedido.setCliente(cliente);
 
-        itensAprovados.forEach(item -> {
-            item.setPedido(pedido);
-        });
+        itensAprovados.forEach(item -> item.setPedido(pedido));
 
         pedido.setItens(itensAprovados);
 
@@ -155,7 +153,6 @@ public class PedidoService implements
     }
 
     @Override
-    @Transactional
     public PedidoResponseDTO merge(final Pedido pedido) {
 
         final var response = new PedidoResponseDTO();
@@ -167,15 +164,15 @@ public class PedidoService implements
     @Override
     public Pedido getObjectAtual(Long pedidoId, Object requestBody) {
 
-        PedidoRequestDTO pedidoRequestDTO = new PedidoRequestDTO();
+        final PedidoRequestDTO pedidoRequestDTO = new PedidoRequestDTO();
 
         modelMapper.map(requestBody, pedidoRequestDTO);
 
         final var pedido = validarPedido(pedidoRequestDTO);
-        final List<ItemPedido> itensAprovados = validarItens(pedidoRequestDTO, pedido);
+        final List<ItemPedido> itensAprovados = validarItens(pedidoRequestDTO);
         validarLimitePorPedido(pedido, itensAprovados);
 
-        Pedido pedidoAtual = pedidoRepository.findById(pedidoId)
+        final Pedido pedidoAtual = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new BadRequestException(
                         new ErrorMessage(AbstractMessageErrorCode.PEDIDO_NAO_ENCONTRADO, pedidoId)));
 
@@ -229,8 +226,25 @@ public class PedidoService implements
         return pedidoResponse;
     }
 
+    public List<PedidoResponseDTO> findByIdCliente(final Long clienteId) {
+
+        final List<Pedido> pedidoList = pedidoRepository.findByClienteId(clienteId);
+        final List<PedidoResponseDTO> pedidoResponseList = new ArrayList<>();
+
+        pedidoList.forEach(pedido -> {
+
+            final var pedidoResponse = new PedidoResponseDTO();
+            modelMapper.map(pedido, pedidoResponse);
+
+            pedidoResponseList.add(pedidoResponse);
+
+        });
+
+        return pedidoResponseList;
+
+    }
+
     @Override
-    @Transactional
     public PedidoResponseDTO update(final Long objectId, final PedidoRequestDTO requestBody) {
 
         final Pedido pedidoAtual = getObjectAtual(objectId, requestBody);
