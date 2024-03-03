@@ -1,20 +1,19 @@
 package br.com.peixoto.atacadista.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CidadeResponseDTO {
+public class CidadeResponseDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Schema(example = "1300")
     private String id;
@@ -22,6 +21,6 @@ public class CidadeResponseDTO {
     @Schema(example = "Uberlândia")
     private String nome;
 
-    private EstadoResponseDTO command;
+    private EstadoResponseDTO estado;
 
 }
