@@ -179,24 +179,19 @@ public class PedidoService implements
                 .orElseThrow(() -> new BadRequestException(
                         new ErrorMessage(AbstractMessageErrorCode.PEDIDO_NAO_ENCONTRADO, pedidoId)));
 
-        pedidoAtual.setItens(null);
-
         BeanUtils.copyProperties(pedido, pedidoAtual, "id", "dataCriacao", "codigo");
 
-        pedidoAtual = pedidoRepository.save(pedidoAtual);
-
+        // Salvar itens de pedido antes de associá-los ao pedido atual
         itensAprovados.forEach(item -> {
-            item.setPedido(pedido);
+            item.setPedido(pedidoAtual);
+            itemPedidoRepository.save(item);
         });
 
-        pedidoAtual.setItens(itensAprovados);
-
+        pedidoAtual.getItens().clear();
+        pedidoAtual.getItens().addAll(itensAprovados);
         pedidoAtual.calcularValorTotal();
-
         pedidoAtual.setValorTotalDesconto(calcularTotalDesconto(itensAprovados));
-
         pedidoAtual.setSubtotal(pedidoAtual.getValorTotal().add(pedidoAtual.getValorTotalDesconto()));
-
         pedidoAtual.setQuantidadeTotalItens(itensAprovados.size());
 
         return pedidoAtual;
