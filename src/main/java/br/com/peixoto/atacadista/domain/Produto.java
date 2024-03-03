@@ -1,6 +1,7 @@
 package br.com.peixoto.atacadista.domain;
 
 import br.com.peixoto.atacadista.enumeration.TipoEmbalagem;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import javax.persistence.Column;
@@ -33,10 +34,12 @@ public class Produto {
     private Long id;
 
     @CreationTimestamp
+    @Schema(example = "2024-02-27T18:33:29.624557Z")
     @Column(name = "data_criacao", columnDefinition = "datetime")
     private OffsetDateTime dataCriacao;
 
     @UpdateTimestamp
+    @Schema(example = "2024-02-27T18:33:29.624557Z")
     @Column(name = "data_alteracao", columnDefinition = "datetime")
     private OffsetDateTime dataAlteracao;
 
