@@ -16,11 +16,15 @@ public abstract class AbstractMessageErrorCode {
     public static final String LIMITE_POR_PEDIDO_EXCEDIDO = "400.007";
     public static final String ITEM_COM_QUANTIDADE_ZERADA = "400.008";
     public static final String LIMITE_MINIMO_ITEM_ATINGIDO = "400.009";
-    public static final String FIELD_REQUIRED = "400.10";
-    public static final String FIELD_INVALID = "400.11";
-    public static final String HEADER_REQUIRED = "400.12";
+    public static final String CIDADE_NAO_ENCONTRADA = "400.010";
+
+    public static final String FIELD_REQUIRED = "400.020";
+    public static final String FIELD_INVALID = "400.021";
+    public static final String HEADER_REQUIRED = "400.022";
+
+
 
     // 422
-    public static final String CONTACT_SYSTEM_ADMIN = "422.005";
+    public static final String CONTACT_SYSTEM_ADMIN = "422.001";
 
 }
