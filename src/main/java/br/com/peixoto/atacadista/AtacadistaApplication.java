@@ -57,22 +57,28 @@ public class AtacadistaApplication implements CommandLineRunner {
 		final Estado e1 = new Estado(ID_01, "Minas Gerais");
 		final Estado e2 = new Estado(ID_02, "São Paulo");
 		final Estado e3 = new Estado(ID_03, "Goiás");
-		estadoRepository.saveAll(Arrays.asList(e1, e2, e3));
+		final Estado e4 = new Estado(ID_04, "Amazonas");
+		estadoRepository.saveAll(Arrays.asList(e1, e2, e3, e4));
 
 		final Cidade c1 = new Cidade(ID_01, "Uberlândia", e1);
 		final Cidade c2 = new Cidade(ID_02, "Campinas", e2);
 		final Cidade c3 = new Cidade(ID_03, "Goiânia", e3);
-		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
+		final Cidade c4 = new Cidade(ID_04, "Manaus", e4);
+		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3, c4));
 
 		final Endereco end1 = new Endereco("38400-000", "Rua da Lavoura", "4.000",
 				"Frente", "Jardim América", c1);
 
-		final Endereco end2 = new Endereco("99000-000", "Rua do lauro", "40",
+		final Endereco end2 = new Endereco("99000-000", "Rua do Lauro", "100",
 				"Frente", "Industrial", c3);
 
-		final Cliente cliente01 = new Cliente(ID_01, "Patrick Farias", "45822715028", end1, new BigDecimal("5000.00"));
-		final Cliente cliente02 = new Cliente(ID_02, "Lauro", "45822715028", end2, new BigDecimal("30000.00"));
-		clienteRepository.saveAll(Arrays.asList(cliente01, cliente02));
+		final Endereco end3 = new Endereco("99000-000", "Rua do Aviador", "14",
+				"Casa", "Inventores", c1);
+
+		final Cliente cliente01 = new Cliente(ID_01, "Patrick Farias", "45822715028", end1, new BigDecimal("5320.00"));
+		final Cliente cliente02 = new Cliente(ID_02, "Lauro", "20480239088", end2, new BigDecimal("32450.00"));
+		final Cliente cliente03 = new Cliente(ID_03, "Santos Dumont", "69717966087", end3, new BigDecimal("24950.00"));
+		clienteRepository.saveAll(Arrays.asList(cliente01, cliente02, cliente03));
 
 		final Categoria cat1 = Categoria.builder()
 				.id(ID_01)
