@@ -10,7 +10,7 @@ import br.com.peixoto.atacadista.dto.ProdutoResponseDTO;
 import br.com.peixoto.atacadista.exception.AbstractMessageErrorCode;
 import br.com.peixoto.atacadista.exception.BadRequestException;
 import br.com.peixoto.atacadista.exception.ErrorMessage;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudService;
 import br.com.peixoto.atacadista.jpamodel.FindRepository;
 import br.com.peixoto.atacadista.jpamodel.MergeRepository;
 import br.com.peixoto.atacadista.repository.ClienteRepository;
@@ -31,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 @Service
 public class PedidoService implements
-        CrudRepository<PedidoRequestDTO, PedidoResponseDTO>,
+        CrudService<PedidoRequestDTO, Pedido>,
         FindRepository<PedidoRequestDTO, PedidoResponseDTO>,
-        MergeRepository<Pedido, PedidoResponseDTO> {
+        MergeRepository<Pedido, Pedido> {
 
     private final PedidoRepository pedidoRepository;
 
@@ -45,81 +45,13 @@ public class PedidoService implements
 
     private final ProdutoService produtoService;
 
+    private final ModelMapperFactory modelMapperFactory;
+
     private final ModelMapper modelMapper;
 
 
-    private Pedido validarPedido(PedidoRequestDTO requestBody) {
-
-        final var pedido = new Pedido();
-        final Cliente cliente = clienteRepository.findById(requestBody.getCliente().getId())
-                .orElseThrow(() -> new BadRequestException(
-                        new ErrorMessage(AbstractMessageErrorCode.CLIENTE_NAO_ENCONTRADO, requestBody.getCliente().getId())));
-        pedido.setCliente(cliente);
-
-        // Item nao pode ter quantidade zerada
-        requestBody.getItens().forEach(item -> {
-            if(item.getQuantidade() == 0) {
-
-                final ProdutoResponseDTO produto = produtoService.findById(item.getProduto().getId());
-                throw new BadRequestException(new ErrorMessage(AbstractMessageErrorCode.ITEM_COM_QUANTIDADE_ZERADA, produto.getDescricao()));
-            }
-        });
-
-        // Deve ter pelo menos um item
-        if(requestBody.getItens().isEmpty()) {
-            throw new BadRequestException(new ErrorMessage(
-                    AbstractMessageErrorCode.LIMITE_MINIMO_ITEM_ATINGIDO));
-        }
-
-        return pedido;
-
-    }
-
-    private List<ItemPedido> validarItens(PedidoRequestDTO requestBody) {
-
-        final List<ItemPedido> itensAprovados = new ArrayList<>();
-        requestBody.getItens().forEach(item -> {
-
-            final Produto produto = produtoRepository.findById(item.getProduto().getId())
-                    .orElseThrow(() -> new BadRequestException(
-                        new ErrorMessage(AbstractMessageErrorCode.PRODUTO_NAO_ENCONTRADO, item.getProduto().getId())));
-
-            item.setProduto(produto);
-            item.setPrecoUnitario(produto.getPreco());
-            item.validadarItens();
-            item.calcularPrecoTotal();
-            itensAprovados.add(item);
-
-        });
-
-        return itensAprovados;
-    }
-
-    private BigDecimal calcularTotalDesconto(List<ItemPedido> itensAprovados) {
-
-        return itensAprovados.stream()
-                .map(ItemPedido::getValorDescontoConcedido)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    }
-
-
-    private void validarLimitePorPedido(Pedido pedido, List<ItemPedido> itensAprovados) {
-
-        final BigDecimal somaPrecoTotal = itensAprovados.stream()
-                .map(ItemPedido::getPrecoTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if(somaPrecoTotal.compareTo(pedido.getCliente().getLimitePorPedido()) > 0){
-            throw new BadRequestException(new ErrorMessage(AbstractMessageErrorCode.LIMITE_POR_PEDIDO_EXCEDIDO,
-                    pedido.getCliente().getId(), pedido.getCliente().getNome(),
-                    pedido.getCliente().getLimitePorPedido(), somaPrecoTotal));
-        }
-    }
-
-
     @Override
-    public PedidoResponseDTO save(PedidoRequestDTO requestBody) {
+    public Pedido save(PedidoRequestDTO requestBody) {
 
         final var pedido = validarPedido(requestBody);
         final List<ItemPedido> itensAprovados = validarItens(requestBody);
@@ -145,20 +77,14 @@ public class PedidoService implements
 
         pedido.setQuantidadeTotalItens(itensAprovados.size());
 
-        final var response = new PedidoResponseDTO();
+        return pedido;
 
-        modelMapper.map(pedidoRepository.save(pedido), response);
-
-        return response;
     }
 
     @Override
-    public PedidoResponseDTO merge(final Pedido pedido) {
+    public Pedido merge(final Pedido pedido) {
 
-        final var response = new PedidoResponseDTO();
-        modelMapper.map(pedidoRepository.save(pedido), response);
-
-        return response;
+        return pedidoRepository.save(pedido);
     }
 
     @Override
@@ -245,7 +171,7 @@ public class PedidoService implements
     }
 
     @Override
-    public PedidoResponseDTO update(final Long objectId, final PedidoRequestDTO requestBody) {
+    public Pedido update(final Long objectId, final PedidoRequestDTO requestBody) {
 
         final Pedido pedidoAtual = getObjectAtual(objectId, requestBody);
 
@@ -263,5 +189,74 @@ public class PedidoService implements
 
         pedidoRepository.delete(pedidoAtual);
 
+    }
+
+    private Pedido validarPedido(PedidoRequestDTO requestBody) {
+
+        final var pedido = new Pedido();
+        final Cliente cliente = clienteRepository.findById(requestBody.getCliente().getId())
+                .orElseThrow(() -> new BadRequestException(
+                        new ErrorMessage(AbstractMessageErrorCode.CLIENTE_NAO_ENCONTRADO, requestBody.getCliente().getId())));
+        pedido.setCliente(cliente);
+
+        // Item nao pode ter quantidade zerada
+        requestBody.getItens().forEach(item -> {
+            if(item.getQuantidade() == 0) {
+
+                final ProdutoResponseDTO produto = produtoService.findById(item.getProduto().getId());
+                throw new BadRequestException(new ErrorMessage(AbstractMessageErrorCode.ITEM_COM_QUANTIDADE_ZERADA, produto.getDescricao()));
+            }
+        });
+
+        // Deve ter pelo menos um item
+        if(requestBody.getItens().isEmpty()) {
+            throw new BadRequestException(new ErrorMessage(
+                    AbstractMessageErrorCode.LIMITE_MINIMO_ITEM_ATINGIDO));
+        }
+
+        return pedido;
+
+    }
+
+    private List<ItemPedido> validarItens(PedidoRequestDTO requestBody) {
+
+        final List<ItemPedido> itensAprovados = new ArrayList<>();
+        requestBody.getItens().forEach(item -> {
+
+            final Produto produto = produtoRepository.findById(item.getProduto().getId())
+                    .orElseThrow(() -> new BadRequestException(
+                            new ErrorMessage(AbstractMessageErrorCode.PRODUTO_NAO_ENCONTRADO, item.getProduto().getId())));
+
+            item.setProduto(produto);
+            item.setPrecoUnitario(produto.getPreco());
+            item.validadarItens();
+            item.calcularPrecoTotal();
+            itensAprovados.add(item);
+
+        });
+
+        return itensAprovados;
+    }
+
+    private BigDecimal calcularTotalDesconto(List<ItemPedido> itensAprovados) {
+
+        return itensAprovados.stream()
+                .map(ItemPedido::getValorDescontoConcedido)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    }
+
+
+    private void validarLimitePorPedido(Pedido pedido, List<ItemPedido> itensAprovados) {
+
+        final BigDecimal somaPrecoTotal = itensAprovados.stream()
+                .map(ItemPedido::getPrecoTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if(somaPrecoTotal.compareTo(pedido.getCliente().getLimitePorPedido()) > 0){
+            throw new BadRequestException(new ErrorMessage(AbstractMessageErrorCode.LIMITE_POR_PEDIDO_EXCEDIDO,
+                    pedido.getCliente().getId(), pedido.getCliente().getNome(),
+                    pedido.getCliente().getLimitePorPedido(), somaPrecoTotal));
+        }
     }
 }

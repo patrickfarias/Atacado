@@ -2,14 +2,16 @@ package br.com.peixoto.atacadista.controller;
 
 import br.com.peixoto.atacadista.dto.PedidoRequestDTO;
 import br.com.peixoto.atacadista.dto.PedidoResponseDTO;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudController;
 import br.com.peixoto.atacadista.jpamodel.FindRepository;
 import br.com.peixoto.atacadista.openapi.controller.PedidoControllerOpenApi;
+import br.com.peixoto.atacadista.service.ModelMapperFactory;
 import br.com.peixoto.atacadista.service.PedidoService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,17 +30,26 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping(path = "/v1/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PedidoController implements
-        CrudRepository<PedidoRequestDTO, PedidoResponseDTO>,
+        CrudController<PedidoRequestDTO, PedidoResponseDTO>,
         FindRepository<PedidoRequestDTO, PedidoResponseDTO>,
         PedidoControllerOpenApi {
 
     private final PedidoService pedidoService;
 
+    private final ModelMapperFactory modelMapperFactory;
+
+    private final ModelMapper modelMapper;
+
     @Override
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public PedidoResponseDTO save(@Valid @RequestBody PedidoRequestDTO requestBody) {
-        return pedidoService.save(requestBody);
+
+        final var response = new PedidoResponseDTO();
+
+        modelMapperFactory.getModelMapper().map(pedidoService.save(requestBody), response);
+
+        return response;
     }
 
     @Override
@@ -46,7 +57,10 @@ public class PedidoController implements
     @PutMapping("/update")
     public PedidoResponseDTO update(@RequestHeader(value="pedidoId") Long pedidoId,
             @Valid @RequestBody PedidoRequestDTO requestBody) {
-        return pedidoService.update(pedidoId, requestBody);
+
+        final var response = new PedidoResponseDTO();
+        modelMapperFactory.getModelMapper().map(pedidoService.update(pedidoId, requestBody), response);
+        return response;
     }
 
     @Override
