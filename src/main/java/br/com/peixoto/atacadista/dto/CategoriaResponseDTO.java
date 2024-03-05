@@ -19,7 +19,7 @@ import lombok.Setter;
 public class CategoriaResponseDTO {
 
     @Schema(example = "1499")
-    private String id;
+    private Long id;
 
     @Schema(example = "Higiene Pessoal")
     private String descricao;

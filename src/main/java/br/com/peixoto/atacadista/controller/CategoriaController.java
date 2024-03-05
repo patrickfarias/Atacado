@@ -2,14 +2,16 @@ package br.com.peixoto.atacadista.controller;
 
 import br.com.peixoto.atacadista.dto.CategoriaRequestDTO;
 import br.com.peixoto.atacadista.dto.CategoriaResponseDTO;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudController;
+import br.com.peixoto.atacadista.jpamodel.FindController;
 import br.com.peixoto.atacadista.openapi.controller.CategoriaControllerOpenApi;
 import br.com.peixoto.atacadista.service.CategoriaService;
+import br.com.peixoto.atacadista.service.ModelMapperFactory;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,17 +30,25 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping(path = "/v1/categorias", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CategoriaController implements
-        CrudRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
-        FindRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
+        CrudController<CategoriaRequestDTO, CategoriaResponseDTO>,
+        FindController<CategoriaRequestDTO, CategoriaResponseDTO>,
         CategoriaControllerOpenApi {
 
     private final CategoriaService categoriaService;
+
+    private final ModelMapperFactory modelMapperFactory;
+
+    private final ModelMapper modelMapper;
 
     @Override
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public CategoriaResponseDTO save(@Valid @RequestBody CategoriaRequestDTO requestBody) {
-        return categoriaService.save(requestBody);
+
+        final var response = new CategoriaResponseDTO();
+        modelMapperFactory.getModelMapper().map(categoriaService.save(requestBody), response);
+        return response;
+
     }
 
     @Override
@@ -46,7 +56,11 @@ public class CategoriaController implements
     @PutMapping("/update")
     public CategoriaResponseDTO update(@RequestHeader(value="categoriaId") Long categoriaId,
             @Valid @RequestBody CategoriaRequestDTO requestBody) {
-        return categoriaService.update(categoriaId, requestBody);
+
+        final var response = new CategoriaResponseDTO();
+        modelMapperFactory.getModelMapper().map(categoriaService.update(categoriaId, requestBody), response);
+        return response;
+
     }
 
     @Override

@@ -6,9 +6,9 @@ import br.com.peixoto.atacadista.dto.CategoriaResponseDTO;
 import br.com.peixoto.atacadista.exception.AbstractMessageErrorCode;
 import br.com.peixoto.atacadista.exception.BadRequestException;
 import br.com.peixoto.atacadista.exception.ErrorMessage;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
-import br.com.peixoto.atacadista.jpamodel.MergeRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudService;
+import br.com.peixoto.atacadista.jpamodel.FindService;
+import br.com.peixoto.atacadista.jpamodel.MergeService;
 import br.com.peixoto.atacadista.repository.CategoriaRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,40 +18,35 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Slf4j
 @AllArgsConstructor
 @Service
 public class CategoriaService implements
-        CrudRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
-        FindRepository<CategoriaRequestDTO, CategoriaResponseDTO>,
-        MergeRepository<Categoria, CategoriaResponseDTO> {
+        CrudService<CategoriaRequestDTO, Categoria>,
+        FindService<CategoriaRequestDTO, CategoriaResponseDTO>,
+        MergeService<Categoria, Categoria> {
 
     private final CategoriaRepository categoriaRepository;
+
+    private final ModelMapperFactory modelMapperFactory;
 
     private final ModelMapper modelMapper;
 
     @Override
-    public CategoriaResponseDTO save(CategoriaRequestDTO requestBody) {
+    public Categoria save(CategoriaRequestDTO requestBody) {
 
         final var categoria = new Categoria();
-        modelMapper.map(requestBody, categoria);
-
-        final var response = new CategoriaResponseDTO();
-
-        modelMapper.map(categoriaRepository.save(categoria), response);
-
-        return response;
+        modelMapperFactory.getModelMapper().map(requestBody, categoria);
+        return categoriaRepository.save(categoria);
     }
 
     @Override
     @Transactional
-    public CategoriaResponseDTO merge(final Categoria categoria) {
+    public Categoria merge(final Categoria categoria) {
 
-        final var response = new CategoriaResponseDTO();
-        modelMapper.map(categoriaRepository.save(categoria), response);
-
-        return response;
+        return categoriaRepository.save(categoria);
     }
 
     @Override
@@ -76,7 +71,7 @@ public class CategoriaService implements
         categoriaList.forEach(categoria -> {
 
             final var categoriaResponse = new CategoriaResponseDTO();
-            modelMapper.map(categoria, categoriaResponse);
+            modelMapperFactory.getModelMapper().map(categoria, categoriaResponse);
 
             catogoriaResponseList.add(categoriaResponse);
 
@@ -92,30 +87,28 @@ public class CategoriaService implements
                         new ErrorMessage(AbstractMessageErrorCode.CATEGORIA_NAO_ENCONTRADA, idCategoria)));
 
         final var categoriaResponse = new CategoriaResponseDTO();
-        modelMapper.map(categoria, categoriaResponse);
+        modelMapperFactory.getModelMapper().map(categoria, categoriaResponse);
 
         return categoriaResponse;
     }
 
     @Override
     @Transactional
-    public CategoriaResponseDTO update(final Long objectId, final CategoriaRequestDTO requestBody) {
+    public Categoria update(final Long objectId, final CategoriaRequestDTO requestBody) {
 
         final Categoria categoriaAtual = getObjectAtual(objectId, requestBody);
 
         return merge(categoriaAtual);
-
     }
 
     @Override
     @Transactional
-    public void delete(final Long idCategoria) {
+    public void delete(@RequestHeader(value="categoriaId") final Long categoriaId) {
 
-        final Categoria categoriaAtual = categoriaRepository.findById(idCategoria)
+        final Categoria categoriaAtual = categoriaRepository.findById(categoriaId)
                 .orElseThrow(() -> new BadRequestException(
-                        new ErrorMessage(AbstractMessageErrorCode.CATEGORIA_NAO_ENCONTRADA, idCategoria)));
+                        new ErrorMessage(AbstractMessageErrorCode.CATEGORIA_NAO_ENCONTRADA, categoriaId)));
 
         categoriaRepository.delete(categoriaAtual);
-
     }
 }
