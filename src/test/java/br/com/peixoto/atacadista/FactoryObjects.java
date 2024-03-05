@@ -37,6 +37,23 @@ public class FactoryObjects {
         return categoriaList;
     }
 
+    public List<CategoriaResponseDTO> getCategoriaResponseListGenericForTest(){
+
+        final List<CategoriaResponseDTO> categoriaResponseDTOList = new ArrayList<>();
+        categoriaResponseDTOList.add(getCategoriaResponseDTOGenericForTest());
+
+        return categoriaResponseDTOList;
+    }
+
+    public List<Optional<CategoriaResponseDTO>> getCategoriaResponseOptionalListGenericForTest(){
+
+        final List<Optional<CategoriaResponseDTO>> categoriaResponseOptionalList = new ArrayList<>();
+
+        categoriaResponseOptionalList.add(Optional.of(getCategoriaResponseDTOGenericForTest()));
+
+        return categoriaResponseOptionalList;
+    }
+
     public CategoriaRequestDTO getCategoriaRequestDTOGenericForTest() {
 
         return CategoriaRequestDTO.builder()
