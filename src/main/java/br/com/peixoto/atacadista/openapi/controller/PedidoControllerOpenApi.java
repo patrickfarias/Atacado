@@ -13,7 +13,7 @@ package br.com.peixoto.atacadista.openapi.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 
-@Tag(name = "Produto")
+@Tag(name = "Pedido")
 public interface PedidoControllerOpenApi {
 
 //    @Operation(summary = "Save", description = "Cadastro de categorias",
