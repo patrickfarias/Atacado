@@ -29,10 +29,7 @@ public class SpringDocConfig {
                         .url("https://www.peixoto.com.br")
                 ).tags(Arrays.asList(
                         new Tag().name("Categoria").description("Gerenciamento de de cadastro de categorias dos produtos."),
-                        new Tag().name("Cidade").description("Gerenciamento de cadastro de cidades."),
                         new Tag().name("Cliente").description("Gerenciamento de cadastro de clientes."),
-                        new Tag().name("Estado").description("Gerenciamento de cadastro de Estados Brasileiros (UF)."),
-                        new Tag().name("Item").description("Gerenciamento de cadastro de itens."),
                         new Tag().name("Pedido").description("Gerenciamento de cadastro de pedidos."),
                         new Tag().name("Produto").description("Gerenciamento de cadastro de Produtos.")
                 )).components(new Components()
