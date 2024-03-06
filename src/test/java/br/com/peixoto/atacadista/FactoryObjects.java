@@ -86,14 +86,14 @@ public class FactoryObjects {
 
     // ITEM
 
-    public ItemPedido getItemPedidoResponseDTOGenericForTest() {
+    public ItemPedido getItemPedidoGenericForTest() {
 
         return ItemPedido.builder()
                 .id(1L)
                 .quantidade(1)
                 .precoUnitario(new BigDecimal("10.00"))
-                .precoTotal(new BigDecimal("20.00"))
-                .percentualDescontoConcedido(new BigDecimal("5.00"))
+                .precoTotal(new BigDecimal("9.00"))
+                .percentualDescontoConcedido(new BigDecimal("10.00"))
                 .valorDescontoConcedido(new BigDecimal("1.00"))
                 .build();
     }
@@ -101,7 +101,7 @@ public class FactoryObjects {
     public List<ItemPedido> getItemPedidoListGenericForTest(){
 
         final List<ItemPedido> itemPedidoList = new ArrayList<>();
-        itemPedidoList.add(getItemPedidoResponseDTOGenericForTest());
+        itemPedidoList.add(getItemPedidoGenericForTest());
 
         return itemPedidoList;
     }

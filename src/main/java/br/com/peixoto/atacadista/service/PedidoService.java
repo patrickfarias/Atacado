@@ -206,6 +206,12 @@ public class PedidoService implements
 
     private Pedido validarPedido(PedidoRequestDTO requestBody) {
 
+        // Deve ter pelo menos um item
+        if(requestBody.getItens().isEmpty()) {
+            throw new BadRequestException(new ErrorMessage(
+                    AbstractMessageErrorCode.LIMITE_MINIMO_ITEM_ATINGIDO));
+        }
+
         final var pedido = new Pedido();
         final Cliente cliente = clienteRepository.findById(requestBody.getCliente().getId())
                 .orElseThrow(() -> new BadRequestException(
@@ -220,12 +226,6 @@ public class PedidoService implements
                 throw new BadRequestException(new ErrorMessage(AbstractMessageErrorCode.ITEM_COM_QUANTIDADE_ZERADA, produto.getDescricao()));
             }
         });
-
-        // Deve ter pelo menos um item
-        if(requestBody.getItens().isEmpty()) {
-            throw new BadRequestException(new ErrorMessage(
-                    AbstractMessageErrorCode.LIMITE_MINIMO_ITEM_ATINGIDO));
-        }
 
         return pedido;
 
