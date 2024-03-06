@@ -359,7 +359,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"descricao\": \"Pedido do Patrick - alterado\",\n    \"status\": \"CRIADO\",\n    \"observacao\": \"Segunda compra deste cliente!!!\",\n    \"cliente\": {\n        \"id\": 1\n    },\n    \"itens\": [\n        {\n            \"quantidade\": 1,\n            \"percentualDescontoConcedido\": \"10.0\",\n            \"produto\": {\n               \"id\": 1\n            }\n        },\n        {\n            \"quantidade\": 1,\n            \"percentualDescontoConcedido\": \"10.0\",\n            \"produto\": {\n                \"id\": 2\n            }\n        }\n    ]\n}",
+							"raw": "{\n    \"observacao\": \" compra deste cliente!!!\",\n    \"cliente\": {\n        \"id\": 1\n    },\n    \"itens\": [\n        {\n            \"quantidade\": 1,\n            \"percentualDescontoConcedido\": \"10.0\",\n            \"produto\": {\n                \"id\": 1\n            }\n        },\n        {\n            \"quantidade\": 1,\n            \"percentualDescontoConcedido\": \"10.0\",\n            \"produto\": {\n                \"id\": 2\n            }\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -478,7 +478,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/v1/pedidos/3",
+							"raw": "http://localhost:8080/v1/pedidos/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -487,7 +487,7 @@
 							"path": [
 								"v1",
 								"pedidos",
-								"3"
+								"1"
 							]
 						}
 					},
