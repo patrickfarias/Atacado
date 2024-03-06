@@ -34,7 +34,7 @@ public interface CategoriaControllerOpenApi {
 
     @Operation(summary = "Delete", description = "Remove uma categoria",
             responses = {@ApiResponse(responseCode = "204")})
-    void delete(@RequestBody(description = "Deleta umaCategoria", required = true) Long idCategoria);
+    void delete(@RequestBody(description = "Deleta uma Categoria", required = true) Long idCategoria);
 
     @Operation(summary = "findById", description = "Lista Categorias por ID",
             parameters = {

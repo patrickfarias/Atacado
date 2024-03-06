@@ -29,23 +29,23 @@ public interface ClienteControllerOpenApi {
                             description = "idCliente", example = "1499", schema = @Schema(type = "Long"))},
             responses = {@ApiResponse(responseCode = "200")}
     )
-    ClienteResponseDTO update(@Parameter(hidden = true, description = "Id da categoria", schema = @Schema(type = "categoriaId")) Long categoriaId,
-                                @RequestBody(description = "Atualiza uma Categoria", required = true) ClienteRequestDTO requestBody);
+    ClienteResponseDTO update(@Parameter(hidden = true, description = "Id do cliente", schema = @Schema(type = "clienteId")) Long clienteId,
+                                @RequestBody(description = "Atualiza um Cliente", required = true) ClienteRequestDTO requestBody);
 
-    @Operation(summary = "Delete", description = "Remove uma categoria",
+    @Operation(summary = "Delete", description = "Remove uma cliente",
             responses = {@ApiResponse(responseCode = "204")})
-    void delete(@RequestBody(description = "Deleta umaCategoria", required = true) Long idCliente);
+    void delete(@RequestBody(description = "Deleta um Cliente", required = true) Long idCliente);
 
-    @Operation(summary = "findById", description = "Lista Categorias por ID",
+    @Operation(summary = "findById", description = "Lista Clientes por ID",
             parameters = {
-                    @Parameter(in = ParameterIn.QUERY, name = "categoriaId",
-                            description = "ID da Categoria",
+                    @Parameter(in = ParameterIn.QUERY, name = "clienteId",
+                            description = "ID do cliente",
                             example = "1499",
                             schema = @Schema(type = "Long"))
             })
-    ClienteResponseDTO findById(@RequestBody(description = "Retorna uma categoria", required = true) Long idCliente);
+    ClienteResponseDTO findById(@RequestBody(description = "Retorna um cliente", required = true) Long idCliente);
 
-    @Operation(summary = "findAll", description = "Lista todas as categorias")
+    @Operation(summary = "findAll", description = "Lista todas os clientes")
     List<ClienteResponseDTO> findAll();
 
 }
