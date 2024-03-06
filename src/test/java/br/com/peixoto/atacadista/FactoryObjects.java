@@ -90,7 +90,7 @@ public class FactoryObjects {
 
         return ItemPedido.builder()
                 .id(1L)
-                .quantidade(2)
+                .quantidade(1)
                 .precoUnitario(new BigDecimal("10.00"))
                 .precoTotal(new BigDecimal("20.00"))
                 .percentualDescontoConcedido(new BigDecimal("5.00"))
@@ -129,8 +129,6 @@ public class FactoryObjects {
     public PedidoRequestDTO getPedidoRequestGenericForTest() {
 
         return PedidoRequestDTO.builder()
-                .descricao("TV 45")
-                .status(StatusPedido.CRIADO)
                 .cliente(getClienteGenericForTest())
                 .itens(getItemPedidoListGenericForTest())
                 .build();
