@@ -65,7 +65,11 @@ public class PedidoService implements
 
         pedido.setCliente(cliente);
 
-        itensAprovados.forEach(item -> item.setPedido(pedido));
+        // Salvar itens de pedido antes de associá-los ao pedido atual
+        itensAprovados.forEach(item -> {
+            item.setPedido(pedido);
+            itemPedidoRepository.save(item);
+        });
 
         pedido.setItens(itensAprovados);
 
@@ -76,6 +80,8 @@ public class PedidoService implements
         pedido.setSubtotal(pedido.getValorTotal().add(pedido.getValorTotalDesconto()));
 
         pedido.setQuantidadeTotalItens(itensAprovados.size());
+
+        pedidoRepository.save(pedido);
 
         return pedido;
 
@@ -102,6 +108,10 @@ public class PedidoService implements
                 .orElseThrow(() -> new BadRequestException(
                         new ErrorMessage(AbstractMessageErrorCode.PEDIDO_NAO_ENCONTRADO, pedidoId)));
 
+        // Removendo os itens antigos da base de dados
+        final List<ItemPedido> itensAntigos = itemPedidoRepository.findByPedidoId(pedidoId);
+        itemPedidoRepository.deleteAll(itensAntigos);
+
         BeanUtils.copyProperties(pedido, pedidoAtual, "id", "dataCriacao", "codigo");
 
         // Salvar itens de pedido antes de associá-los ao pedido atual
@@ -116,6 +126,8 @@ public class PedidoService implements
         pedidoAtual.setValorTotalDesconto(calcularTotalDesconto(itensAprovados));
         pedidoAtual.setSubtotal(pedidoAtual.getValorTotal().add(pedidoAtual.getValorTotalDesconto()));
         pedidoAtual.setQuantidadeTotalItens(itensAprovados.size());
+
+        pedidoRepository.save(pedidoAtual);
 
         return pedidoAtual;
     }
@@ -171,6 +183,7 @@ public class PedidoService implements
     }
 
     @Override
+    @Transactional
     public Pedido update(final Long objectId, final PedidoRequestDTO requestBody) {
 
         final Pedido pedidoAtual = getObjectAtual(objectId, requestBody);
