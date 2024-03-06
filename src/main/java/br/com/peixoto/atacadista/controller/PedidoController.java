@@ -3,7 +3,7 @@ package br.com.peixoto.atacadista.controller;
 import br.com.peixoto.atacadista.dto.PedidoRequestDTO;
 import br.com.peixoto.atacadista.dto.PedidoResponseDTO;
 import br.com.peixoto.atacadista.jpamodel.CrudController;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
+import br.com.peixoto.atacadista.jpamodel.FindController;
 import br.com.peixoto.atacadista.openapi.controller.PedidoControllerOpenApi;
 import br.com.peixoto.atacadista.service.ModelMapperFactory;
 import br.com.peixoto.atacadista.service.PedidoService;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/v1/pedidos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PedidoController implements
         CrudController<PedidoRequestDTO, PedidoResponseDTO>,
-        FindRepository<PedidoRequestDTO, PedidoResponseDTO>,
+        FindController<PedidoRequestDTO, PedidoResponseDTO>,
         PedidoControllerOpenApi {
 
     private final PedidoService pedidoService;

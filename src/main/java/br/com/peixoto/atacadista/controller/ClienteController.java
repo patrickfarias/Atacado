@@ -3,8 +3,8 @@ package br.com.peixoto.atacadista.controller;
 
 import br.com.peixoto.atacadista.dto.ClienteRequestDTO;
 import br.com.peixoto.atacadista.dto.ClienteResponseDTO;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudController;
+import br.com.peixoto.atacadista.jpamodel.FindController;
 import br.com.peixoto.atacadista.openapi.controller.ClienteControllerOpenApi;
 import br.com.peixoto.atacadista.service.ClienteService;
 import java.util.List;
@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping(path = "/v1/clientes", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ClienteController implements
-        CrudRepository<ClienteRequestDTO, ClienteResponseDTO>,
-        FindRepository<ClienteRequestDTO, ClienteResponseDTO>,
+        CrudController<ClienteRequestDTO, ClienteResponseDTO>,
+        FindController<ClienteRequestDTO, ClienteResponseDTO>,
         ClienteControllerOpenApi {
 
     private final ClienteService clienteService;

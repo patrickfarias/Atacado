@@ -7,9 +7,9 @@ import br.com.peixoto.atacadista.dto.ProdutoResponseDTO;
 import br.com.peixoto.atacadista.exception.AbstractMessageErrorCode;
 import br.com.peixoto.atacadista.exception.BadRequestException;
 import br.com.peixoto.atacadista.exception.ErrorMessage;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
-import br.com.peixoto.atacadista.jpamodel.MergeRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudService;
+import br.com.peixoto.atacadista.jpamodel.FindService;
+import br.com.peixoto.atacadista.jpamodel.MergeService;
 import br.com.peixoto.atacadista.repository.CategoriaRepository;
 import br.com.peixoto.atacadista.repository.ProdutoRepository;
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 @Service
 public class ProdutoService implements
-        CrudRepository<ProdutoRequestDTO, ProdutoResponseDTO>,
-        FindRepository<ProdutoRequestDTO, ProdutoResponseDTO>,
-        MergeRepository<Produto, ProdutoResponseDTO> {
+        CrudService<ProdutoRequestDTO, ProdutoResponseDTO>,
+        FindService<ProdutoRequestDTO, ProdutoResponseDTO>,
+        MergeService<Produto, ProdutoResponseDTO> {
 
     private final ProdutoRepository produtoRepository;
 

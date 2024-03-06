@@ -9,9 +9,9 @@ import br.com.peixoto.atacadista.dto.EnderecoRequestDTO;
 import br.com.peixoto.atacadista.exception.AbstractMessageErrorCode;
 import br.com.peixoto.atacadista.exception.BadRequestException;
 import br.com.peixoto.atacadista.exception.ErrorMessage;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
-import br.com.peixoto.atacadista.jpamodel.MergeRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudService;
+import br.com.peixoto.atacadista.jpamodel.FindService;
+import br.com.peixoto.atacadista.jpamodel.MergeService;
 import br.com.peixoto.atacadista.repository.CidadeRepository;
 import br.com.peixoto.atacadista.repository.ClienteRepository;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 @Service
 public class ClienteService implements
-        CrudRepository<ClienteRequestDTO, ClienteResponseDTO>,
-        FindRepository<ClienteRequestDTO, ClienteResponseDTO>,
-        MergeRepository<Cliente, ClienteResponseDTO> {
+        CrudService<ClienteRequestDTO, ClienteResponseDTO>,
+        FindService<ClienteRequestDTO, ClienteResponseDTO>,
+        MergeService<Cliente, ClienteResponseDTO> {
 
     private final ClienteRepository clienteRepository;
 

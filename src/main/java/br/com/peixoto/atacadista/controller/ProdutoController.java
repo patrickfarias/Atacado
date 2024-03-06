@@ -2,8 +2,8 @@ package br.com.peixoto.atacadista.controller;
 
 import br.com.peixoto.atacadista.dto.ProdutoRequestDTO;
 import br.com.peixoto.atacadista.dto.ProdutoResponseDTO;
-import br.com.peixoto.atacadista.jpamodel.CrudRepository;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
+import br.com.peixoto.atacadista.jpamodel.CrudController;
+import br.com.peixoto.atacadista.jpamodel.FindController;
 import br.com.peixoto.atacadista.openapi.controller.ProdutoControllerOpenApi;
 import br.com.peixoto.atacadista.service.ProdutoService;
 import java.util.List;
@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @RequestMapping(path = "/v1/produtos", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProdutoController implements
-        CrudRepository<ProdutoRequestDTO, ProdutoResponseDTO>,
-        FindRepository<ProdutoRequestDTO, ProdutoResponseDTO>,
+        CrudController<ProdutoRequestDTO, ProdutoResponseDTO>,
+        FindController<ProdutoRequestDTO, ProdutoResponseDTO>,
         ProdutoControllerOpenApi {
 
     private final ProdutoService produtoService;

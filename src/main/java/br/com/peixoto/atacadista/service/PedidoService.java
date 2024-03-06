@@ -11,8 +11,8 @@ import br.com.peixoto.atacadista.exception.AbstractMessageErrorCode;
 import br.com.peixoto.atacadista.exception.BadRequestException;
 import br.com.peixoto.atacadista.exception.ErrorMessage;
 import br.com.peixoto.atacadista.jpamodel.CrudService;
-import br.com.peixoto.atacadista.jpamodel.FindRepository;
-import br.com.peixoto.atacadista.jpamodel.MergeRepository;
+import br.com.peixoto.atacadista.jpamodel.FindService;
+import br.com.peixoto.atacadista.jpamodel.MergeService;
 import br.com.peixoto.atacadista.repository.ClienteRepository;
 import br.com.peixoto.atacadista.repository.ItemPedidoRepository;
 import br.com.peixoto.atacadista.repository.PedidoRepository;
@@ -32,8 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PedidoService implements
         CrudService<PedidoRequestDTO, Pedido>,
-        FindRepository<PedidoRequestDTO, PedidoResponseDTO>,
-        MergeRepository<Pedido, Pedido> {
+        FindService<PedidoRequestDTO, PedidoResponseDTO>,
+        MergeService<Pedido, Pedido> {
 
     private final PedidoRepository pedidoRepository;
 
