@@ -22,10 +22,12 @@ public class ClienteRequestDTO {
     @NotNull
     private String nome;
 
+    @Schema(example = "12345678900")
     private String cpf;
 
     private EnderecoRequestDTO endereco;
 
+    @Schema(example = "5000.00")
     private BigDecimal limitePorPedido;
 
 }

@@ -27,7 +27,7 @@ public class ClienteResponseDTO implements Serializable {
 
     private EnderecoResponseDTO endereco;
 
-    @Schema(example = "12345678900")
+    @Schema(example = "1200.00")
     private BigDecimal limitePorPedido;
 
 
